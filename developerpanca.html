@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Developer Panel — Pancasandya X.5</title>
+<link rel="icon" type="image/jpeg" href="https://file.garden/amb24ZUqZzagxpoJ/motion_photo_8284850200272742895.jpg">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   PANCASANDYA — X.5 SMA NEGERI 1 SEMIN
+   Konsep desain: "Sandya" bermakna senja/kehangatan yang mengikat —
+   palet & motion terinspirasi dari langit senja yang perlahan berubah
+   warna. Garis gradasi "cakrawala" jadi elemen tanda tangan yang muncul
+   berulang di seluruh halaman.
+   ========================================================================= */
+
+:root{
+  --void:      #140B27;
+  --dusk:      #3A1F5C;
+  --dusk-2:    #5B2A5E;
+  --ember:     #F2914A;
+  --blush:     #E8637A;
+  --ivory:     #FBF1E4;
+  --mist:      #B6AAC8;
+  --ok:        #8FD9A8;
+
+  --glass: rgba(251,241,228,0.06);
+  --glass-border: rgba(251,241,228,0.14);
+  --shadow-deep: 0 20px 60px rgba(10,4,25,0.55);
+
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 10px;
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background: var(--void);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  line-height:1.6;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ambient senja glow di belakang seluruh halaman */
+body::before{
+  content:"";
+  position: fixed;
+  inset: -20% -20% auto -20%;
+  height: 120vh;
+  background:
+    radial-gradient(38% 32% at 18% 12%, rgba(242,145,74,0.16), transparent 70%),
+    radial-gradient(45% 38% at 85% 8%, rgba(232,99,122,0.14), transparent 70%),
+    radial-gradient(60% 50% at 50% 100%, rgba(58,31,92,0.55), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientDrift 22s ease-in-out infinite alternate;
+}
+
+@keyframes ambientDrift{
+  0%{ transform: translateY(0) scale(1); }
+  100%{ transform: translateY(2%) scale(1.05); }
+}
+
+img{ max-width:100%; display:block; }
+a{ color: inherit; text-decoration: none; }
+button{ font-family: inherit; }
+
+.container{
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow{
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+
+h1, h2, h3{
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+}
+
+p{ margin: 0 0 1em; color: var(--mist); }
+
+.visually-hidden{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+/* ---------- garis cakrawala (signature element) ---------- */
+.horizon-bar{
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--ember), var(--blush), var(--dusk-2), var(--ember));
+  background-size: 300% 100%;
+  animation: horizonShift 9s ease-in-out infinite;
+  border-radius: 999px;
+  opacity: 0.9;
+}
+
+@keyframes horizonShift{
+  0%{ background-position: 0% 50%; }
+  50%{ background-position: 100% 50%; }
+  100%{ background-position: 0% 50%; }
+}
+
+/* ---------- navbar ---------- */
+.navbar{
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(20,11,39,0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.navbar-inner{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding: 16px 24px;
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.sidebar-toggle{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  flex-shrink:0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.sidebar-toggle:hover{ background: rgba(251,241,228,0.12); transform: translateY(-1px); }
+.sidebar-toggle:focus-visible{ outline: 2px solid var(--ember); outline-offset: 2px; }
+
+.sidebar-toggle .bar{
+  display:block;
+  width: 20px;
+  height: 2px;
+  background: var(--ivory);
+  margin: 3px 0;
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.sidebar-toggle.is-active .bar:nth-child(1){ transform: translateY(5px) rotate(45deg); }
+.sidebar-toggle.is-active .bar:nth-child(2){ opacity:0; }
+.sidebar-toggle.is-active .bar:nth-child(3){ transform: translateY(-5px) rotate(-45deg); }
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 0.01em;
+}
+.brand-dot{
+  width:8px; height:8px; border-radius:50%;
+  background: linear-gradient(135deg, var(--ember), var(--blush));
+  box-shadow: 0 0 12px var(--ember);
+}
+
+/* ---------- sidebar ---------- */
+.sidebar-overlay{
+  position: fixed; inset:0;
+  background: rgba(10,4,20,0.55);
+  backdrop-filter: blur(3px);
+  opacity:0; pointer-events:none;
+  transition: opacity 0.3s ease;
+  z-index: 48;
+}
+.sidebar-overlay.is-open{ opacity:1; pointer-events:auto; }
+
+.sidebar{
+  position: fixed;
+  top:0; left:0; bottom:0;
+  width: min(300px, 84vw);
+  background: linear-gradient(175deg, #1C1130 0%, #2C1B4D 100%);
+  border-right: 1px solid var(--glass-border);
+  transform: translateX(-100%);
+  transition: transform 0.4s cubic-bezier(.22,.9,.32,1);
+  z-index: 49;
+  padding: 28px 22px;
+  display:flex;
+  flex-direction:column;
+  box-shadow: var(--shadow-deep);
+}
+.sidebar.is-open{ transform: translateX(0); }
+
+.sidebar-gate{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  padding: 30px 0 10px;
+  transition: opacity 0.5s ease;
+}
+.sidebar-gate img{
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  animation: gateBlink 0.32s ease-in-out 4;
+}
+.sidebar-gate span{
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mist);
+}
+.sidebar-gate.is-hidden{ opacity:0; height:0; padding:0; overflow:hidden; pointer-events:none; }
+
+@keyframes gateBlink{
+  0%, 100%{ opacity:1; filter: brightness(1); }
+  50%{ opacity:0.22; filter: brightness(1.4); }
+}
+
+.sidebar-nav{
+  display:flex;
+  flex-direction:column;
+  gap: 6px;
+  opacity:0;
+  transform: translateY(6px);
+  transition: opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s;
+}
+.sidebar-nav.is-visible{ opacity:1; transform: translateY(0); }
+
+.sidebar-nav a{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding: 13px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--ivory);
+  font-weight:500;
+  font-size: 0.95rem;
+  transition: background 0.2s ease, padding-left 0.2s ease;
+}
+.sidebar-nav a:hover, .sidebar-nav a.is-active{
+  background: var(--glass);
+  padding-left: 18px;
+}
+.sidebar-nav a.is-active{ color: var(--ember); }
+
+.sidebar-footer{
+  margin-top:auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--glass-border);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--mist);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- fade utilities (scroll/page reveal) ---------- */
+.reveal{
+  opacity:0;
+  transform: translateY(18px);
+  transition: opacity 0.9s cubic-bezier(.22,.9,.32,1), transform 0.9s cubic-bezier(.22,.9,.32,1);
+}
+.reveal.is-in{ opacity:1; transform: translateY(0); }
+
+/* ---------- hero / index ---------- */
+.hero{
+  padding: 56px 0 40px;
+  text-align:center;
+}
+
+.hero-frame{
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 28px;
+  border-radius: 32px;
+  padding: 4px;
+  background: conic-gradient(from 120deg, var(--ember), var(--blush), var(--dusk-2), var(--ember));
+  opacity:0;
+  transform: scale(0.88);
+  animation: photoIn 1.4s cubic-bezier(.22,.9,.32,1) 0.2s forwards;
+  box-shadow: var(--shadow-deep);
+}
+.hero-frame img{
+  width:100%; height:100%;
+  object-fit: cover;
+  border-radius: 28px;
+  display:block;
+}
+
+@keyframes photoIn{
+  0%{ opacity:0; transform: scale(0.88); }
+  100%{ opacity:1; transform: scale(1); }
+}
+
+.typewriter-line{
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 4vw, 1.9rem);
+  min-height: 1.6em;
+  opacity:0;
+  animation: fadeIn 1s ease 1.1s forwards;
+}
+.typewriter-line .caret{
+  display:inline-block;
+  width: 2px;
+  margin-left: 2px;
+  background: var(--ember);
+  animation: caretBlink 0.9s steps(1) infinite;
+}
+
+@keyframes fadeIn{ to{ opacity:1; } }
+@keyframes caretBlink{ 50%{ opacity:0; } }
+
+.desc-card{
+  margin-top: 34px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 30px 26px;
+  text-align: left;
+}
+.desc-card + .desc-card{ margin-top: 16px; }
+.desc-card .lang-label{
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blush);
+  margin-bottom: 10px;
+  display:block;
+}
+.desc-card p{ color: var(--ivory); margin:0; font-size: 0.98rem; }
+
+.stat-row{
+  display:flex;
+  gap: 14px;
+  justify-content:center;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+.stat-chip{
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--mist);
+  border: 1px solid var(--glass-border);
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--glass);
+}
+.stat-chip strong{ color: var(--ember); }
+
+/* ---------- pancasandya.html — makna ---------- */
+.meaning-page{ padding: 70px 0 90px; }
+.meaning-block{
+  margin-bottom: 30px;
+}
+.meaning-word{
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 9vw, 4rem);
+  background: linear-gradient(120deg, var(--ember), var(--blush));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color: transparent;
+  line-height: 1;
+}
+.meaning-split{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 32px 0;
+}
+.meaning-split .piece{
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  border-radius: var(--radius-md);
+  padding: 22px;
+}
+.meaning-split .piece .word{
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--ember);
+  margin-bottom: 6px;
+}
+.meaning-final{
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 3.4vw, 1.6rem);
+  color: var(--ivory);
+  line-height:1.5;
+  border-left: 3px solid var(--ember);
+  padding-left: 18px;
+  margin-top: 34px;
+}
+
+/* ---------- form (NGL) ---------- */
+.form-page{ padding: 56px 0 90px; }
+.form-card{
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  margin-top: 26px;
+}
+.field{ margin-bottom: 20px; }
+.field label{
+  display:block;
+  font-size: 0.82rem;
+  color: var(--mist);
+  margin-bottom: 8px;
+}
+.field .optional{
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--blush);
+  margin-left: 6px;
+}
+.field input, .field textarea, .field select{
+  width:100%;
+  background: rgba(20,11,39,0.55);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 13px 14px;
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 0.96rem;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.field select{ cursor:pointer; }
+.field textarea{ min-height: 120px; }
+.field input:focus, .field textarea:focus, .field select:focus{
+  outline:none;
+  border-color: var(--ember);
+  box-shadow: 0 0 0 3px rgba(242,145,74,0.18);
+}
+.field input::placeholder, .field textarea::placeholder{ color: rgba(182,170,200,0.55); }
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border:none;
+  border-radius: 999px;
+  padding: 14px 26px;
+  font-weight:600;
+  font-size: 0.94rem;
+  cursor:pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.btn-primary{
+  background: linear-gradient(120deg, var(--ember), var(--blush));
+  color: var(--void);
+  box-shadow: 0 10px 30px rgba(242,145,74,0.28);
+}
+.btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 14px 34px rgba(242,145,74,0.38); }
+.btn-primary:active{ transform: translateY(0); }
+.btn-block{ width:100%; }
+
+.btn-danger{
+  background: rgba(232,99,122,0.14);
+  color: var(--blush);
+  border: 1px solid rgba(232,99,122,0.35);
+}
+.btn-danger:hover{ background: rgba(232,99,122,0.24); }
+
+.btn-ghost{
+  background: var(--glass);
+  color: var(--ivory);
+  border: 1px solid var(--glass-border);
+}
+.btn-ghost:hover{ background: rgba(251,241,228,0.12); }
+
+/* ---------- admin inbox ---------- */
+.admin-page{ padding: 46px 0 90px; }
+.admin-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 14px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.admin-count{
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--mist);
+}
+.inbox-list{
+  display:flex;
+  flex-direction:column;
+  gap: 14px;
+}
+.inbox-card{
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  animation: cardIn 0.5s ease;
+}
+@keyframes cardIn{
+  from{ opacity:0; transform: translateY(-8px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+.inbox-card-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.inbox-to{
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--ember);
+}
+.inbox-time{
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--mist);
+  white-space:nowrap;
+}
+.inbox-message{ color: var(--ivory); margin:0 0 10px; }
+.inbox-card-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+}
+.inbox-from{
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--mist);
+}
+.inbox-delete{
+  border: 1px solid rgba(232,99,122,0.3);
+  background: transparent;
+  color: var(--blush);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.inbox-delete:hover{ background: rgba(232,99,122,0.14); border-color: rgba(232,99,122,0.5); }
+.inbox-empty{
+  text-align:center;
+  padding: 60px 20px;
+  color: var(--mist);
+  border: 1px dashed var(--glass-border);
+  border-radius: var(--radius-md);
+}
+
+/* ---------- kontrol NGL (admin & developer) ---------- */
+.ngl-control{
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 24px 26px;
+  margin-bottom: 30px;
+}
+.ngl-control-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.ngl-control p{ font-size: 0.9rem; margin-bottom: 18px; }
+
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(143,217,168,0.1);
+  border: 1px solid rgba(143,217,168,0.35);
+  color: var(--ok);
+  white-space: normal;
+}
+.status-pill::before{
+  content:"";
+  width:8px; height:8px;
+  border-radius:50%;
+  background: var(--ok);
+  flex-shrink:0;
+}
+.status-pill.is-off{
+  background: rgba(232,99,122,0.1);
+  border-color: rgba(232,99,122,0.35);
+  color: var(--blush);
+}
+.status-pill.is-off::before{ background: var(--blush); }
+
+.dev-duration-row{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.dev-duration-row select{
+  flex: 1;
+  min-width: 160px;
+  background: rgba(20,11,39,0.55);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 13px 14px;
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  cursor: pointer;
+}
+.dev-duration-row select:focus{
+  outline:none;
+  border-color: var(--ember);
+  box-shadow: 0 0 0 3px rgba(242,145,74,0.18);
+}
+.dev-duration-row .btn{ flex-shrink:0; }
+
+/* ---------- ngl status banner (nglpanca.html) ---------- */
+.ngl-banner{
+  display:none;
+  align-items:center;
+  gap: 10px;
+  background: rgba(232,99,122,0.1);
+  border: 1px solid rgba(232,99,122,0.3);
+  color: var(--blush);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 0.86rem;
+  margin-top: 18px;
+}
+.field input:disabled, .field textarea:disabled{
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn:disabled{
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform:none !important;
+}
+
+/* ---------- developer login gate ---------- */
+.dev-login{
+  max-width: 380px;
+  margin: 90px auto;
+  text-align:center;
+  padding: 0 24px;
+}
+.dev-login-icon{
+  width: 56px; height:56px;
+  border-radius: 16px;
+  margin: 0 auto 20px;
+  display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, var(--dusk-2), var(--void));
+  border: 1px solid var(--glass-border);
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+}
+.dev-login-card{
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  margin-top: 20px;
+  text-align:left;
+}
+
+/* ---------- anggota / roster ---------- */
+.roster-page{ padding: 50px 0 90px; }
+.roster-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+  margin-top: 28px;
+}
+.roster-item{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.roster-item:hover{ transform: translateY(-2px); border-color: rgba(242,145,74,0.4); }
+.roster-num{
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, rgba(242,145,74,0.25), rgba(232,99,122,0.25));
+  color: var(--ivory);
+  flex-shrink:0;
+}
+.roster-name{ font-size: 0.9rem; color: var(--ivory); }
+
+/* ---------- sosmed ---------- */
+.social-page{ padding: 64px 0 90px; text-align:center; }
+.social-links{
+  display:flex;
+  gap: 14px;
+  justify-content:center;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+.social-link{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 13px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  font-weight:600;
+  font-size: 0.92rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.social-link:hover{ transform: translateY(-2px); background: rgba(251,241,228,0.12); }
+.social-link svg{ width:20px; height:20px; }
+.social-link.ig:hover{ color: var(--blush); }
+.social-link.tt:hover{ color: var(--ember); }
+
+/* ---------- modal ---------- */
+.modal-overlay{
+  position: fixed; inset:0;
+  background: rgba(8,3,17,0.62);
+  backdrop-filter: blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 20px;
+  z-index: 90;
+  opacity:0;
+  pointer-events:none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.is-open{ opacity:1; pointer-events:auto; }
+
+.modal-box{
+  width: 100%;
+  max-width: 380px;
+  background: linear-gradient(175deg, #241539, #2E1A46);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 28px 26px;
+  box-shadow: var(--shadow-deep);
+  transform: translateY(14px) scale(0.96);
+  opacity:0;
+  transition: transform 0.35s cubic-bezier(.22,.9,.32,1), opacity 0.35s ease;
+}
+.modal-overlay.is-open .modal-box{ transform: translateY(0) scale(1); opacity:1; }
+
+.modal-icon{
+  width: 46px; height:46px;
+  border-radius: 14px;
+  display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, var(--ember), var(--blush));
+  margin-bottom: 16px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--void);
+}
+.modal-box h3{ font-size: 1.15rem; margin-bottom: 8px; }
+.modal-box p{ font-size: 0.9rem; margin-bottom: 22px; }
+.modal-actions{ display:flex; gap: 10px; }
+.modal-actions .btn{ flex:1; }
+
+/* ---------- footer ---------- */
+.site-footer{
+  text-align:center;
+  padding: 30px 24px 50px;
+  color: var(--mist);
+  font-size: 0.78rem;
+  position: relative;
+  z-index:1;
+}
+.site-footer .horizon-bar{ max-width: 160px; margin: 0 auto 18px; }
+
+/* ---------- member login (member.html) ---------- */
+.member-login{
+  max-width: 400px;
+  margin: 70px auto;
+  padding: 0 24px;
+  text-align:center;
+}
+.member-login-icon{
+  width: 56px; height:56px;
+  border-radius: 16px;
+  margin: 0 auto 20px;
+  display:flex; align-items:center; justify-content:center;
+  background: linear-gradient(135deg, var(--ember), var(--blush));
+  color: var(--void);
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+}
+.member-login-card{
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  margin-top: 20px;
+  text-align:left;
+}
+
+.password-field{ position: relative; }
+.password-field input{ padding-right: 46px; }
+.password-toggle{
+  position:absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px; height:34px;
+  border:none;
+  background: transparent;
+  color: var(--mist);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  border-radius: 8px;
+}
+.password-toggle:hover{ color: var(--ivory); background: var(--glass); }
+.password-toggle svg{ width:19px; height:19px; }
+.password-toggle .eye-off{ display:none; }
+.password-toggle.is-visible .eye-on{ display:none; }
+.password-toggle.is-visible .eye-off{ display:block; }
+
+.captcha-box{
+  background: repeating-linear-gradient(135deg, rgba(251,241,228,0.04) 0 8px, rgba(251,241,228,0.01) 8px 16px), rgba(20,11,39,0.55);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.captcha-letters{
+  display:flex;
+  gap: 4px;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  user-select: none;
+}
+.captcha-letters span{ display:inline-block; }
+.captcha-refresh{
+  width: 34px; height:34px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--ivory);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  flex-shrink:0;
+  transition: transform 0.3s ease, background 0.2s ease;
+}
+.captcha-refresh:hover{ background: rgba(251,241,228,0.12); transform: rotate(80deg); }
+.captcha-refresh svg{ width:16px; height:16px; }
+
+.captcha-verify-row{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.captcha-verify-row .btn{ flex-shrink:0; }
+
+.captcha-result-icon{
+  width: 40px; height:40px;
+  border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 1.1rem;
+  flex-shrink:0;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--mist);
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+.captcha-result-icon.is-success{
+  background: rgba(143,217,168,0.14);
+  border-color: rgba(143,217,168,0.4);
+  color: var(--ok);
+}
+.captcha-result-icon.is-error{
+  background: rgba(232,99,122,0.14);
+  border-color: rgba(232,99,122,0.4);
+  color: var(--blush);
+}
+
+.loader{
+  display:inline-block;
+  width: 16px; height:16px;
+  border-radius:50%;
+  border: 2px solid rgba(251,241,228,0.25);
+  border-top-color: currentColor;
+  animation: loaderSpin 0.7s linear infinite;
+}
+@keyframes loaderSpin{ to{ transform: rotate(360deg); } }
+
+/* ---------- panel member ---------- */
+.member-panel-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.member-panel-header h1{ margin-bottom:4px; }
+.member-welcome{
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ok);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 560px){
+  .meaning-split{ grid-template-columns: 1fr; }
+  .hero{ padding: 40px 0 24px; }
+  .navbar-inner{ padding: 14px 18px; }
+}
+
+/* ---------- accessibility ---------- */
+:focus-visible{ outline: 2px solid var(--ember); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  body::before{ animation: none; }
+}
+
+</style>
+</head>
+<body>
+
+<header class="navbar">
+  <div class="navbar-inner">
+    <button id="sidebarToggle" class="sidebar-toggle" aria-label="Buka menu" aria-expanded="false">
+      <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+    </button>
+    <div class="brand"><span class="brand-dot"></span> Pancasandya · Developer</div>
+  </div>
+  <div class="horizon-bar"></div>
+</header>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<aside class="sidebar" id="sidebar" aria-hidden="true">
+  <div class="sidebar-gate" id="sidebarGate">
+    <img src="https://file.garden/amb24ZUqZzagxpoJ/67b3fdc64d6d9.png" alt="Lambang Pancasandya">
+    <span>Membuka Gerbang…</span>
+  </div>
+  <nav class="sidebar-nav" id="sidebarNav">
+    <a href="index.html">Dashboard</a>
+    <a href="pancasandya.html">What Is Pancasandya?</a>
+    <a href="nglpanca.html">NGL</a>
+    <a href="anggota.html">Anggota Kelas</a>
+    <a href="sosmed.html">Sosmed Kelas</a>
+  </nav>
+  <div class="sidebar-footer">X.5 · SMA NEGERI 1 SEMIN · Est. 2026</div>
+</aside>
+
+<!-- ===== gerbang login developer ===== -->
+<section class="dev-login" id="devLoginScreen">
+  <div class="dev-login-icon">◆</div>
+  <span class="eyebrow">Akses Terbatas</span>
+  <h1>Developer Panel</h1>
+  <p>Halaman ini khusus untuk developer Pancasandya. Masukkan password untuk melanjutkan.</p>
+
+  <form class="dev-login-card" id="devLoginForm">
+    <div class="field">
+      <label for="devPassword">Password Developer</label>
+      <input type="password" id="devPassword" name="password" placeholder="Masukkan password…" autocomplete="off" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+  </form>
+</section>
+
+<!-- ===== panel developer (tersembunyi sampai berhasil login) ===== -->
+<main class="container admin-page" id="devPanel" style="display:none;">
+  <span class="eyebrow reveal">Panel Developer</span>
+  <h1 class="reveal" style="margin-bottom:24px;">Kontrol Penuh Pancasandya</h1>
+
+  <section class="ngl-control reveal">
+    <div class="ngl-control-head">
+      <div>
+        <span class="eyebrow">Kontrol Developer</span>
+        <h2 style="margin:4px 0 0;">Matikan Fitur NGL Selama</h2>
+      </div>
+      <span class="status-pill" id="devNglStatusText">Memuat…</span>
+    </div>
+    <p>Jadwalkan NGL nonaktif sementara, atau aktifkan kembali kapan saja. Mengaktifkan NGL di sini akan langsung membatalkan status nonaktif yang diatur admin, karena wewenang developer lebih tinggi.</p>
+
+    <div class="dev-duration-row">
+      <select id="devDuration">
+        <option value="30">30 Menit</option>
+        <option value="60" selected>1 Jam</option>
+        <option value="360">6 Jam</option>
+        <option value="720">12 Jam</option>
+        <option value="1440">1 Hari</option>
+        <option value="4320">3 Hari</option>
+        <option value="10080">7 Hari</option>
+      </select>
+      <button class="btn btn-danger" id="devDisableBtn" type="button">Matikan Sekarang</button>
+    </div>
+    <button class="btn btn-primary btn-block" id="devActivateBtn" type="button" style="margin-top:12px;">Aktifkan NGL Sekarang</button>
+  </section>
+
+  <div class="admin-header">
+    <div>
+      <span class="eyebrow">Inbox</span>
+      <h2 style="margin-bottom:4px;">Pesan NGL Masuk</h2>
+      <span class="admin-count" id="devInboxCount">Memuat…</span>
+    </div>
+    <button class="btn btn-danger" id="devDeleteAllBtn">Delete All</button>
+  </div>
+
+  <div class="inbox-list" id="devInboxList">
+    <div class="inbox-empty">Memuat pesan…</div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="horizon-bar"></div>
+  Pancasandya · Kelas X.5 · SMA Negeri 1 Semin
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+/* =========================================================================
+   firebase-config.js — inisialisasi Firebase Realtime Database
+   Dipakai oleh nglpanca.html (kirim pesan) dan admin.html (baca & hapus)
+   ========================================================================= */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCIX4l0jIMmfM7en6ojmkjW25hPBogwcdc",
+  authDomain: "pancasandya-44667.firebaseapp.com",
+  databaseURL: "https://pancasandya-44667-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "pancasandya-44667",
+  storageBucket: "pancasandya-44667.firebasestorage.app",
+  messagingSenderId: "18825512048",
+  appId: "1:18825512048:web:69ac6cf86b50c3e1a860b5",
+  measurementId: "G-VNZEYPP1ME"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+</script>
+<script>
+/* =========================================================================
+   main.js — perilaku bersama di semua halaman Pancasandya:
+   sidebar + animasi gerbang, reveal on load, typewriter, dan modal custom
+   ========================================================================= */
+
+/* ---------------- SIDEBAR ---------------- */
+(function initSidebar(){
+  const toggle   = document.getElementById('sidebarToggle');
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('sidebarOverlay');
+  const gate     = document.getElementById('sidebarGate');
+  const nav      = document.getElementById('sidebarNav');
+  const closeBtn = document.getElementById('sidebarClose');
+
+  if(!toggle || !sidebar) return;
+
+  let gateTimer = null;
+
+  function openSidebar(){
+    toggle.classList.add('is-active');
+    sidebar.classList.add('is-open');
+    overlay.classList.add('is-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    sidebar.setAttribute('aria-hidden', 'false');
+
+    // reset urutan animasi gerbang setiap dibuka
+    gate.classList.remove('is-hidden');
+    nav.classList.remove('is-visible');
+    gate.querySelectorAll('img').forEach(img=>{
+      img.style.animation = 'none';
+      // force reflow supaya animasi blink restart
+      void img.offsetWidth;
+      img.style.animation = '';
+    });
+
+    clearTimeout(gateTimer);
+    gateTimer = setTimeout(()=>{
+      gate.classList.add('is-hidden');
+      nav.classList.add('is-visible');
+    }, 1500);
+  }
+
+  function closeSidebar(){
+    toggle.classList.remove('is-active');
+    sidebar.classList.remove('is-open');
+    overlay.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    sidebar.setAttribute('aria-hidden', 'true');
+    clearTimeout(gateTimer);
+  }
+
+  toggle.addEventListener('click', ()=>{
+    sidebar.classList.contains('is-open') ? closeSidebar() : openSidebar();
+  });
+  overlay.addEventListener('click', closeSidebar);
+  if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeSidebar();
+  });
+
+  // tandai link aktif sesuai halaman saat ini
+  const currentPage = location.pathname.split('/').pop() || 'index.html';
+  nav.querySelectorAll('a').forEach(a=>{
+    if(a.getAttribute('href') === currentPage) a.classList.add('is-active');
+  });
+})();
+
+/* ---------------- REVEAL ON LOAD / SCROLL ---------------- */
+(function initReveal(){
+  const items = document.querySelectorAll('.reveal');
+  if(!items.length) return;
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  items.forEach((el, i)=>{
+    el.style.transitionDelay = (i * 0.12) + 's';
+    io.observe(el);
+  });
+})();
+
+/* ---------------- TYPEWRITER ---------------- */
+function startTypewriter(elementId, phrases, opts){
+  const el = document.getElementById(elementId);
+  if(!el) return;
+
+  const options = Object.assign({
+    typeSpeed: 70,
+    deleteSpeed: 40,
+    pauseAfterType: 1400,
+    pauseAfterDelete: 400
+  }, opts || {});
+
+  let lastIndex = -1;
+
+  function pickPhrase(){
+    if(phrases.length === 1) return phrases[0];
+    let idx;
+    do{ idx = Math.floor(Math.random() * phrases.length); } while(idx === lastIndex);
+    lastIndex = idx;
+    return phrases[idx];
+  }
+
+  function typeLoop(){
+    const phrase = pickPhrase();
+    let charIndex = 0;
+
+    function typeChar(){
+      el.textContent = phrase.slice(0, charIndex);
+      charIndex++;
+      if(charIndex <= phrase.length){
+        const jitter = Math.random() * 40;
+        setTimeout(typeChar, options.typeSpeed + jitter);
+      } else {
+        setTimeout(deleteChar, options.pauseAfterType);
+      }
+    }
+
+    function deleteChar(){
+      charIndex--;
+      el.textContent = phrase.slice(0, charIndex);
+      if(charIndex >= 0){
+        setTimeout(deleteChar, options.deleteSpeed);
+      } else {
+        setTimeout(typeLoop, options.pauseAfterDelete);
+      }
+    }
+
+    typeChar();
+  }
+
+  typeLoop();
+}
+
+/* ---------------- MODAL SYSTEM (pengganti alert/confirm) ---------------- */
+function showModal(config){
+  const cfg = Object.assign({
+    icon: '✦',
+    title: '',
+    message: '',
+    buttons: [{ label: 'Oke', primary: true }]
+  }, config);
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.setAttribute('role', 'dialog');
+  overlay.setAttribute('aria-modal', 'true');
+
+  const box = document.createElement('div');
+  box.className = 'modal-box';
+
+  const icon = document.createElement('div');
+  icon.className = 'modal-icon';
+  icon.textContent = cfg.icon;
+
+  const title = document.createElement('h3');
+  title.textContent = cfg.title;
+
+  const msg = document.createElement('p');
+  msg.textContent = cfg.message;
+
+  const actions = document.createElement('div');
+  actions.className = 'modal-actions';
+
+  function close(){
+    overlay.classList.remove('is-open');
+    setTimeout(()=> overlay.remove(), 300);
+  }
+
+  cfg.buttons.forEach(btnCfg=>{
+    const btn = document.createElement('button');
+    btn.className = 'btn ' + (btnCfg.primary ? 'btn-primary' : 'btn-ghost');
+    btn.textContent = btnCfg.label;
+    btn.addEventListener('click', ()=>{
+      if(typeof btnCfg.onClick === 'function') btnCfg.onClick();
+      close();
+    });
+    actions.appendChild(btn);
+  });
+
+  box.appendChild(icon);
+  box.appendChild(title);
+  box.appendChild(msg);
+  box.appendChild(actions);
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  overlay.addEventListener('click', (e)=>{
+    if(e.target === overlay && cfg.dismissible !== false) close();
+  });
+
+  requestAnimationFrame(()=> overlay.classList.add('is-open'));
+
+  return { close };
+}
+
+</script>
+<script>
+/* =========================================================================
+   ngl-settings.js — helper status fitur NGL, dipakai bersama oleh
+   nglpanca.html, admin.html, dan developerpanca.html
+   ========================================================================= */
+
+const NGL_SETTINGS_REF = 'settings/ngl';
+
+/**
+ * Menentukan apakah NGL sedang aktif berdasarkan data settings di Firebase.
+ * - disabledUntil (timestamp di masa depan) selalu menang, walau admin
+ *   sudah menyalakan "active" — ini yang membuat jadwal dari developer
+ *   otomatis berakhir sendiri tanpa perlu ada yang menekan tombol lagi.
+ * - active:false berarti dimatikan manual tanpa batas waktu.
+ */
+function nglIsActive(settings){
+  const now = Date.now();
+  if(settings && settings.disabledUntil && settings.disabledUntil > now) return false;
+  if(settings && settings.active === false) return false;
+  return true;
+}
+
+function nglStatusLabel(settings){
+  const now = Date.now();
+  if(settings && settings.disabledUntil && settings.disabledUntil > now){
+    let label = 'Nonaktif hingga ' + formatDateTime(settings.disabledUntil);
+    if(settings.disabledBy) label += ' · oleh ' + capitalize(settings.disabledBy);
+    return label;
+  }
+  if(settings && settings.active === false){
+    let label = 'Nonaktif';
+    if(settings.disabledBy) label += ' · dimatikan oleh ' + capitalize(settings.disabledBy);
+    return label;
+  }
+  return 'Aktif';
+}
+
+function formatDateTime(ts){
+  return new Date(ts).toLocaleString('id-ID', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
+function capitalize(str){
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+</script>
+<script>
+/* =========================================================================
+   inbox.js — render inbox NGL realtime + hapus 1 pesan / hapus semua.
+   Dipakai bersama oleh admin.html dan developerpanca.html.
+   ========================================================================= */
+
+function initInboxUI(opts){
+  const list = document.getElementById(opts.listId);
+  const count = opts.countId ? document.getElementById(opts.countId) : null;
+  const deleteAllBtn = opts.deleteAllId ? document.getElementById(opts.deleteAllId) : null;
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  db.ref('messages').on('value', (snapshot)=>{
+    const data = snapshot.val();
+    list.innerHTML = '';
+
+    if(!data){
+      list.innerHTML = '<div class="inbox-empty">Belum ada pesan NGL yang masuk.</div>';
+      if(count) count.textContent = '0 pesan';
+      return;
+    }
+
+    // urutkan terbaru di paling atas (menumpuk)
+    const entries = Object.entries(data).sort((a, b)=>{
+      return (b[1].timestamp || 0) - (a[1].timestamp || 0);
+    });
+
+    if(count) count.textContent = entries.length + ' pesan';
+
+    entries.forEach(([key, msg])=>{
+      const card = document.createElement('div');
+      card.className = 'inbox-card';
+      card.innerHTML = `
+        <div class="inbox-card-top">
+          <span class="inbox-to">Kepada: ${escapeHtml(msg.kepada || '-')}</span>
+          <span class="inbox-time">${msg.timestamp ? formatDateTime(msg.timestamp) : ''}</span>
+        </div>
+        <p class="inbox-message">${escapeHtml(msg.pesan || '')}</p>
+        <div class="inbox-card-bottom">
+          <span class="inbox-from">Dari: ${escapeHtml(msg.nama || 'Anonim')}</span>
+          <button type="button" class="inbox-delete" data-key="${key}">Hapus</button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+
+    list.querySelectorAll('.inbox-delete').forEach((btn)=>{
+      btn.addEventListener('click', ()=>{
+        const key = btn.getAttribute('data-key');
+        showModal({
+          icon: '!',
+          title: 'Hapus Pesan Ini?',
+          message: 'Pesan ini akan terhapus permanen dari inbox.',
+          buttons: [
+            { label: 'Batal', primary: false },
+            { label: 'Ya, Hapus', primary: true, onClick: ()=> db.ref('messages/' + key).remove() }
+          ]
+        });
+      });
+    });
+  });
+
+  if(deleteAllBtn){
+    deleteAllBtn.addEventListener('click', ()=>{
+      showModal({
+        icon: '!',
+        title: 'Hapus Semua Pesan?',
+        message: 'Apakah kamu yakin ingin menghapus seluruh pesan NGL? Pesan akan terhapus selamanya.',
+        buttons: [
+          { label: 'Batal', primary: false },
+          { label: 'Ya, Hapus', primary: true, onClick: ()=> db.ref('messages').remove() }
+        ]
+      });
+    });
+  }
+}
+
+</script>
+<script>
+/* =========================================================================
+   developer-auth.js — passcode sederhana untuk halaman developerpanca.html
+   PENTING: ganti nilai di bawah ini dengan passcode kamu sendiri sebelum
+   website dipublikasikan.
+   ========================================================================= */
+
+const DEVELOPER_PASSCODE = "sandya-dev-2026";
+
+</script>
+<script>
+/* =========================================================================
+   developer.js — halaman developerpanca.html
+   ========================================================================= */
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  const loginScreen = document.getElementById('devLoginScreen');
+  const loginForm   = document.getElementById('devLoginForm');
+  const passInput   = document.getElementById('devPassword');
+  const panel       = document.getElementById('devPanel');
+
+  function unlockPanel(){
+    loginScreen.style.display = 'none';
+    panel.style.display = 'block';
+    panel.querySelectorAll('.reveal').forEach(el=> el.classList.add('is-in'));
+    initDeveloperPanel();
+  }
+
+  if(sessionStorage.getItem('pancasandyaDevAuth') === '1'){
+    unlockPanel();
+  }
+
+  loginForm.addEventListener('submit', (e)=>{
+    e.preventDefault();
+
+    if(passInput.value === DEVELOPER_PASSCODE){
+      sessionStorage.setItem('pancasandyaDevAuth', '1');
+      unlockPanel();
+    } else {
+      showModal({
+        icon: '!',
+        title: 'Password Salah',
+        message: 'Password developer yang kamu masukkan tidak sesuai.',
+        buttons: [{ label: 'Coba Lagi', primary: true }]
+      });
+      passInput.value = '';
+      passInput.focus();
+    }
+  });
+
+  function initDeveloperPanel(){
+    initInboxUI({ listId: 'devInboxList', countId: 'devInboxCount', deleteAllId: 'devDeleteAllBtn' });
+
+    const statusPill   = document.getElementById('devNglStatusText');
+    const durationSel  = document.getElementById('devDuration');
+    const disableBtn   = document.getElementById('devDisableBtn');
+    const activateBtn  = document.getElementById('devActivateBtn');
+
+    db.ref(NGL_SETTINGS_REF).on('value', (snap)=>{
+      const settings = snap.val() || {};
+      const active = nglIsActive(settings);
+      statusPill.textContent = nglStatusLabel(settings);
+      statusPill.classList.toggle('is-off', !active);
+    });
+
+    disableBtn.addEventListener('click', ()=>{
+      const minutes = parseInt(durationSel.value, 10);
+      const until = Date.now() + minutes * 60000;
+
+      db.ref(NGL_SETTINGS_REF).update({
+        active: false,
+        disabledUntil: until,
+        disabledBy: 'developer'
+      }).then(()=>{
+        showModal({
+          icon: '✓',
+          title: 'NGL Dimatikan',
+          message: 'Fitur NGL dimatikan sampai ' + formatDateTime(until) + '. Setelah itu, NGL aktif lagi dengan sendirinya.',
+          buttons: [{ label: 'Oke', primary: true }]
+        });
+      });
+    });
+
+    activateBtn.addEventListener('click', ()=>{
+      db.ref(NGL_SETTINGS_REF).update({
+        active: true,
+        disabledUntil: null,
+        disabledBy: null
+      }).then(()=>{
+        showModal({
+          icon: '✓',
+          title: 'NGL Diaktifkan',
+          message: 'Fitur NGL aktif kembali untuk semua pengguna. Status nonaktif dari admin (jika ada) otomatis dibatalkan.',
+          buttons: [{ label: 'Oke', primary: true }]
+        });
+      });
+    });
+  }
+});
+
+</script>
+</body>
+</html>
